@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            height: 90%;
+            overflow-y: auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #recipe-output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recipe Finder</h1>
+        <form id="ingredient-form">
+            <label for="ingredients">Enter ingredients (comma separated):</label>
+            <input type="text" id="ingredients" name="ingredients" required>
+            <button type="submit">Find Recipe</button>
+        </form>
+        <div id="recipe-output"></div>
+    </div>
+    <script>
+        document.getElementById('ingredient-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let ingredients = document.getElementById('ingredients').value.split(',').map(item => item.trim());
+
+            let recipes = {
+                'Spaghetti Bolognese': {
+                    ingredients: ['spaghetti', 'tomato', 'beef', 'garlic'],
+                    procedure: [
+                        '1. Cook the spaghetti according to the package instructions.',
+                        '2. In a separate pan, cook the beef until browned.',
+                        '3. Add chopped tomatoes and garlic to the beef and simmer for 15 minutes.',
+                        '4. Serve the sauce over the spaghetti.'
+                    ]
+                },
+                'Tomato Soup': {
+                    ingredients: ['tomato', 'onion', 'garlic', 'broth'],
+                    procedure: [
+                        '1. Sauté chopped onion and garlic in a pot until translucent.',
+                        '2. Add chopped tomatoes and broth, then simmer for 20 minutes.',
+                        '3. Blend the mixture until smooth.',
+                        '4. Serve hot.'
+                    ]
+                },
+                'Chicken Salad': {
+                    ingredients: ['chicken', 'lettuce', 'tomato', 'cucumber'],
+                    procedure: [
+                        '1. Cook the chicken and chop it into bite-sized pieces.',
+                        '2. Chop lettuce, tomato, and cucumber.',
+                        '3. Mix all ingredients in a bowl and serve with your favorite dressing.'
+                    ]
+                },
+                'Pancakes': {
+                    ingredients: ['flour', 'egg', 'milk', 'sugar'],
+                    procedure: [
+                        '1. Mix flour, egg, milk, and sugar in a bowl until smooth.',
+                        '2. Heat a non-stick pan and pour in the batter to form pancakes.',
+                        '3. Cook until bubbles form on the surface, then flip and cook until golden brown.',
+                        '4. Serve with syrup or your favorite toppings.'
+                    ]
+                }
+            };
+
+            let foundRecipes = [];
+
+            for (let recipe in recipes) {
+                let ingredientsNeeded = recipes[recipe].ingredients;
+                if (ingredientsNeeded.every(ing => ingredients.includes(ing))) {
+                    foundRecipes.push({
+                        name: recipe,
+                        procedure: recipes[recipe].procedure
+                    });
+                }
+            }
+
+            let output = document.getElementById('recipe-output');
+            if (foundRecipes.length > 0) {
+                output.innerHTML = `<h2>Recipes you can make:</h2>${foundRecipes.map(recipe => `<h3>${recipe.name}</h3>${recipe.procedure.map(step => `<p>${step}</p>`).join('')}`).join('')}`;
+            } else {
+                output.innerHTML = `<h2>No recipes found with those ingredients</h2>`;
+            }
+        });
+    </script>
+</body>
+</html>
