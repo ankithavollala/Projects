@@ -1,0 +1,42 @@
+import java.io.*;
+import java.util.Scanner;
+public class FileEncryption{
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the path of the input file: ");
+        String inputFile = sc.nextLine();
+        System.out.print("Enter the path of the output file: ");
+        String outputFile = sc.nextLine();
+        System.out.print("Enter the shifting amount for encryption (1-25): ");
+        int shift = sc.nextInt();
+        sc.nextLine(); 
+        try {
+            fileEncrypt(inputFile, outputFile, shift);
+            System.out.println("The encrypted file is:" + outputFile);
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
+        } finally {
+            sc.close();
+        }
+    }
+    public static void fileEncrypt(String inputFile, String outputFile, int shift) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+
+            int character;
+            while ((character = reader.read()) != -1) {
+                char originalChar = (char) character;
+                char encryptedChar = encryptChar(originalChar, shift);
+                writer.write(encryptedChar);
+            }
+        }
+    }
+    public static char encryptChar(char ch, int shift) {
+        if (!Character.isLetter(ch)) {
+            return ch; 
+        }
+        int shiftedAlphabetPosition = (ch - 'A' + shift) % 26;
+        char shiftedChar = (char) ('A' + shiftedAlphabetPosition);
+        return shiftedChar;
+    }
+}
