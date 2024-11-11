@@ -1,0 +1,110 @@
+class Movie:
+    def __init__(self, title, genre, rating, language):
+        self.title = title
+        self.genre = genre
+        self.language = language
+        self.ratings = [rating]
+
+    def average_rating(self):
+        return sum(self.ratings) / len(self.ratings) if self.ratings else 0
+
+
+class RecommendationSystem:
+    def __init__(self):
+        self.movies = []  # List of all movies
+
+    def add_movie(self, title, genre, rating, language):
+        movie = Movie(title, genre, rating, language)
+        self.movies.append(movie)
+
+    def recommend_movies(self, language, genre, min_rating):
+        recommendations = []
+        for movie in self.movies:
+            if (movie.language == language and movie.genre == genre 
+                    and movie.average_rating() >= min_rating):
+                recommendations.append((movie.title, movie.average_rating()))
+        
+        recommendations.sort(key=lambda x: x[1], reverse=True)
+        
+        if recommendations:
+            print(f"\nMovies available in '{language}' under '{genre}' genre with a rating of {min_rating} or higher:")
+            for title, rating in recommendations:
+                print(f"- {title} (Average Rating: {rating:.2f})")
+        else:
+            print(f"\nNo movies available in '{language}' under '{genre}' genre with a rating of {min_rating} or higher.")
+
+
+if __name__ == "__main__":
+    system = RecommendationSystem()
+    
+    # Adding Telugu movies
+    telugu_movies = [
+        ("Daruvu", "Comedy", 3), ("Hello Guru Prema Kosame", "Comedy", 3), ("Race Gurram", "Comedy", 3),
+        ("Ohm", "Comedy", 4), ("Bhim Bush Mathu Vadalara", "Comedy", 4), ("Jathi Ratnalu", "Comedy", 5),
+        ("Mad", "Comedy", 5), ("Siddarth Roy", "Romantic", 3), ("Shyam Singh Roy", "Romantic", 3),
+        ("Premalu", "Romantic", 4), ("Hi Nanna", "Romantic", 4), ("Seetha Ramam", "Romantic", 5),
+        ("Fida", "Romantic", 5), ("Eega", "Sci-Fi", 5), ("Robot", "Sci-Fi", 4), ("Aditya 369", "Sci-Fi", 3),
+        ("Arundhati", "Horror", 5), ("Deyyam", "Horror", 3), ("Ammoru", "Horror", 4),
+        ("Baahubali", "Action", 5), ("Sye", "Action", 3), ("Bharat Ane Nenu", "Action", 4),
+        ("Rakshasudu", "Crime", 4), ("Shiva", "Crime", 3)
+    ]
+    for title, genre, rating in telugu_movies:
+        system.add_movie(title, genre, rating, "Telugu")
+    
+    # Adding Hindi movies
+    hindi_movies = [
+        ("Andaz Apna Apna", "Comedy", 5), ("Dhamaal", "Comedy", 4), ("Hera Pheri", "Comedy", 4),
+        ("Kabir Singh", "Romantic", 5), ("DDLJ", "Romantic", 5), ("2 States", "Romantic", 4),
+        ("Krrish", "Sci-Fi", 4), ("PK", "Sci-Fi", 4), ("Ra.One", "Sci-Fi", 3),
+        ("Stree", "Horror", 4), ("Bhool Bhulaiyaa", "Horror", 5), ("Pari", "Horror", 3),
+        ("Dhoom 3", "Action", 4), ("War", "Action", 4), ("Bang Bang", "Action", 3),
+        ("Drishyam", "Crime", 4), ("Singham", "Crime", 4)
+    ]
+    for title, genre, rating in hindi_movies:
+        system.add_movie(title, genre, rating, "Hindi")
+    
+    # Adding English movies
+    english_movies = [
+        ("The Hangover", "Comedy", 5), ("Step Brothers", "Comedy", 4), ("Anchorman", "Comedy", 4),
+        ("Titanic", "Romantic", 5), ("The Notebook", "Romantic", 5), ("La La Land", "Romantic", 4),
+        ("Interstellar", "Sci-Fi", 5), ("Inception", "Sci-Fi", 5), ("The Matrix", "Sci-Fi", 5),
+        ("The Conjuring", "Horror", 5), ("A Quiet Place", "Horror", 4), ("It", "Horror", 4),
+        ("Mad Max: Fury Road", "Action", 5), ("John Wick", "Action", 4), ("The Dark Knight", "Action", 5),
+        ("The Godfather", "Crime", 5), ("Se7en", "Crime", 5)
+    ]
+    for title, genre, rating in english_movies:
+        system.add_movie(title, genre, rating, "English")
+
+    # User Interaction
+    user_name = input("Enter your name: ")
+    print(f"\nHello, {user_name}!")
+
+    print("\nSelect your preferred language:")
+    languages = ["Telugu", "Hindi", "English"]
+    for i, lang in enumerate(languages, 1):
+        print(f"{i}. {lang}")
+    try:
+        lang_choice = int(input("Enter the number corresponding to your choice: "))
+        selected_language = languages[lang_choice - 1] if 1 <= lang_choice <= len(languages) else "Telugu"
+    except ValueError:
+        selected_language = "Telugu"
+
+    print("\nSelect a genre to watch:")
+    genres = ["Comedy", "Romantic", "Sci-Fi", "Horror", "Action", "Crime"]
+    for i, genre in enumerate(genres, 1):
+        print(f"{i}. {genre}")
+    try:
+        genre_choice = int(input("Enter the number corresponding to your choice: "))
+        selected_genre = genres[genre_choice - 1] if 1 <= genre_choice <= len(genres) else "Comedy"
+    except ValueError:
+        selected_genre = "Comedy"
+
+    try:
+        min_rating = int(input("\nEnter the minimum rating you'd like to see (1-5): "))
+        if min_rating < 1 or min_rating > 5:
+            min_rating = 1
+    except ValueError:
+        min_rating = 1
+
+    print("\nBased on your preferences, here are some recommended movies:")
+    system.recommend_movies(selected_language, selected_genre, min_rating)
